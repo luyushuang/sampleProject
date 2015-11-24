@@ -1,0 +1,19 @@
+# 运行 simple-command 项目
+1）mvn assembly:assembly
+
+2）调用 Hibernate3 插件的 hbm2ddl 目标来创建 HSQLDB 数据库
+mvn hibernate3:hbm2ddl
+
+3）运行
+java -cp target/simple-command-jar-with-dependencies.jar org.sonatype.mavenbook.weather.Main 60202
+
+
+# 运行 simple-webapp 项目
+1）调用 Hibernate3 插件的 hbm2ddl 目标来创建 HSQLDB 数据库
+mvn hibernate3:hbm2ddl
+
+2）使用 jetty 启动 web 应用
+mvn jetty:run
+
+3）Jetty 启动之后，使用如下 URL 进行测试
+http://localhost:8080/simple-webapp/weather.x?zip=60202
