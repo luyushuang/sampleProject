@@ -1,0 +1,54 @@
+<web-app id="simple-webapp" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" 
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+			     http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+  <display-name>Simple Web Application</display-name>
+  
+  <!-- 这里有一些魔法能让我们在项目中重用 applicationContext-weather.xml 和applicationContext-persist.xml。
+   contextConfigLocation 由 ContextLoaderListener 用来创建一个 ApplicationContext。  -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>
+      classpath:applicationContext-weather.xml
+      classpath:applicationContext-persist.xml
+    </param-value>
+  </context-param>
+  
+  <!-- log4jConfigLocation 用来告诉 Log4JConfigListener 哪里去寻找 Log4J 日志配置。
+  	该例中，我们告诉 Log4J 在/WEB-INF/log4j.properties 中寻找。 -->
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>/WEB-INF/log4j.properties</param-value>
+  </context-param>
+  
+  <!-- 这里确保当 web 应用启动的时候 Log4J 系统被配置。将 Log4JConfigListener 放在
+		ContextLoaderListener 前面十分重要；否则你可能丢失那些指向阻止应用启动问题的重要日志信息。 
+		如果你在 Spring 启动之前有了日志，你就有机会看到警告或错误信息；如果你在 Spring启动之前没有配置日志，你就不知道为什么你的应用不能启动了。-->
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>
+  
+  <!-- ContextLoaderListener 本质上是一个 Spring 容器。
+  	当应用启动的时候，这个监听器会根据contextConfigLocation 参数构造一个 ApplicationContext。 -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  
+  <!-- 我们定义一个名为 weather 的 Spring MVC DispatcherServlet。这会让 Spring 从
+	/WEB-INF/weather-servlet.xml 寻找 Spring 配置文件。你可以拥有任意多的 DispatcherServlet，
+	一个 DispatcherServlet 可以包含一个或多个 Spring MVC Controller 实现。 -->
+  <servlet>
+    <servlet-name>weather</servlet-name>
+    <servlet-class>
+      org.springframework.web.servlet.DispatcherServlet
+    </servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <!-- 所有以.x 结尾的请求都会被路由至 weather servlet。注意.x 扩展名没有任何特殊的意义，
+  	这是一个随意的选择，你可以使用任意你喜欢的 URL模式。 -->
+  <servlet-mapping>
+    <servlet-name>weather</servlet-name>
+    <url-pattern>*.x</url-pattern>
+  </servlet-mapping>
+</web-app>
